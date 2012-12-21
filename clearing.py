@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Author: kailash.buki@gmail.com
+# Usage: Run this script to sanitize the tweets in the database
 
 import re
 from stemming.porter2 import stem
@@ -29,10 +31,14 @@ EXCLUDE = set(string.punctuation)
 
 
 def remove_punctuations(text):
+    """removes punctuations from the text
+    """
     text = ''.join(ch for ch in text if ch not in EXCLUDE)
     return text
 
 def escape(word):
+    """returns True if word is not required for processing
+    """
     if word in STOPWORDS or EMAILPAT.match(word) or FLOATPAT.match(word):
         return True
 
@@ -41,6 +47,8 @@ def escape(word):
         return True
 
 def filter(text):
+    """stems words and filters unwanted characters and words from the tweet text.
+    """
     text = text.lower()
     words = text.split()
     tokens = [stem(word) for word in words if not escape(word)]
@@ -49,6 +57,8 @@ def filter(text):
     return text
 
 def sanitize():
+    """filters all the tweets residing in the database
+    """
     db = DatabaseDriver()
     db.setup()
 
