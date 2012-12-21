@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="/static/css/docs.css">
+    <title>Refine tweets</title>
+</head>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Container
+    ================================================== -->
+    <div class="container" id="body_container">
+        <div class="row">
+            <section id="pagination" class="span12">
+                <!--<span class="badge badge-success">{{ labelled }}</span>-->
+                <div class="pagination pagination-right">
+                    <ul>
+                        <li><a style="line-height: 26px;" href="javascript: location.reload();"><i class="icon icon-refresh"></i> </a></li>
+                        <li {% if pn-1 <= 0 %}class="disabled"{% endif %}><a style="line-height: 26px;" href="{% if pn-1 <= 0 %}javascript:void(){% else %}{{ url_for('main', pn=pn-1) }}{% endif %}">«</a></li>
+                        <li><a style="line-height: 26px;" href="{{ url_for('main', pn=pn+1) }}">»</a></li>
+                    </ul>
+                </div>
+            </section>
+            <section id="content">
+                <div class="span12">
+                    <table class="table table-condensed">
+                        <tbody>
+                            {% for r in res %}
+                                <tr id="{{ r[0] }}_row" class="{% if r[2] == 'pos' %}success{% elif r[2] == 'neg' %}warning{% endif %}">
+                                    <td>({{ r[0] }}) {{ r[1] }}</td>
+                                    <td>
+                                        <a rel="tooltip" data-original-title="positive" class="action" id="{{ r[0] }}_pos" href="#"><i class="icon icon-thumbs-up"></i> </a>&nbsp; &nbsp;
+                                        <a class="action" data-original-title="negative" id="{{ r[0] }}_neg" href="#"><i class="icon icon-thumbs-down"></i> </a>&nbsp; &nbsp;
+                                        <a class="action" data-original-title="remove" id="{{ r[0] }}_rem" href="#"><i class="icon icon-remove"></i> </a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        <div>
+    </div>
+
+    <!-- Javascript
+    ================================================== -->
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.action').tooltip();
+        });
+
+        $('.action').click(function(){
+            var eid = $(this).attr('id');
+            eid = eid.split('_')
+            var id = eid[0]
+            var label = eid[1]
+
+            var loading_html = '<img src="/static/images/loading.gif">';
+            $(this).html(loading_html);
+            $.ajax({
+                url: "/action",
+                global: false,
+                type: "POST",
+                data: {id: id, label: label},
+                dataType: "html",
+                async: true,
+                success: function(msg){
+                    if(label=='rem'){
+                        cname = 'error';
+                    }else if(label=='pos'){
+                        cname = 'success';
+                    }else{
+                        cname = 'warning';
+                    }
+                    $('#'+id+'_row').attr('class', cname);
+                    //location.reload();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
