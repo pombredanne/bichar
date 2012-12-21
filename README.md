@@ -7,9 +7,16 @@ Twitter Sentiment Analyzer based on Naive Baysian Classifier
 Setting up
 ==========
 
-step1: python preparing.py
-step2: move inside web directory and python app.py
-step3: access the frontend from the browser and label the data
-step4: once labelling is complete, move to the bichar directory and python clearing.py
-step5: python training.py
+1. `python preparing.py` => crawls twitter search data & saves into the db
+2. `cd web && python app.py` => runs the server which allows for refining and labelling from browser
+3. `python clearing.py` => filters noise and unwanted words from tweets
+4. `python training.py` => to test the test set accuracy OR import this module to predict labels for new tweets
+
+
+Dependencies
+============
+
+- python-flask
+- stemming
+- python-requests
 

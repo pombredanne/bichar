@@ -2,7 +2,6 @@
 
 
 import json
-import oauth2 as oauth
 import requests
 from urllib import quote
 
